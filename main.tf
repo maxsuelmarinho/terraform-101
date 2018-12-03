@@ -66,7 +66,7 @@ resource "aws_instance" "instance" {
 
 resource "aws_security_group" "instance" {
   name   = "terraform_sg_example_instance"
-  vpc_id = "${var.vpc_id}"
+  vpc_id = "${data.aws_vpc.vpc.id}"
 
   ingress {
     from_port   = "${var.server_port}"
@@ -91,7 +91,7 @@ resource "aws_security_group" "instance" {
 }
 
 resource "aws_subnet" "instance_a" {
-  vpc_id            = "${var.vpc_id}"
+  vpc_id            = "${data.aws_vpc.vpc.id}"
   availability_zone = "${var.region}a"
   cidr_block        = "${cidrsubnet(cidrsubnet(data.aws_vpc.vpc.cidr_block, 1, 0), 4, 8)}"
 
