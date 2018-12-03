@@ -4,8 +4,6 @@ variable "secret_key" {}
 
 variable "vpc_id" {}
 
-variable "subnet_cidr_block" {}
-
 variable "route_table_id" {}
 
 variable "key_name" {
@@ -40,6 +38,10 @@ data "template_file" "user_data" {
   vars {
     server_port = "${var.server_port}"
   }
+}
+
+data "aws_vpc" "vpc" {
+  id = "${var.vpc_id}"
 }
 
 resource "aws_instance" "instance" {
@@ -91,7 +93,7 @@ resource "aws_security_group" "instance" {
 resource "aws_subnet" "instance_a" {
   vpc_id            = "${var.vpc_id}"
   availability_zone = "${var.region}a"
-  cidr_block        = "${var.subnet_cidr_block}"
+  cidr_block        = "${cidrsubnet(cidrsubnet(data.aws_vpc.vpc.cidr_block, 1, 0), 4, 8)}"
 
   tags {
     Name = "subnet_example_instance_a"
